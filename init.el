@@ -88,11 +88,30 @@
   (setq which-key-idle-delay 10000)
   (setq which-key-idle-secondary-delay 0.05))
 
-;; org-mode
+;; org-mode (custom setup)
 (use-package org
   :config
   (setq org-todo-keywords
   '((sequence "TODO" "IN-PROGRESS" "WAITING" "DONE"))))
+
+;; org-bullets (https://github.com/sabof/org-bullets)
+;; utf-8 bullets for org-mode
+(use-package org-bullets
+  :after org
+  :hook (org-mode . org-bullets-mode))
+
+;; visual-fill-column (https://github.com/joostkremers/visual-fill-column)
+;; Wraps lines at "fill-column"
+;; org-mode usage
+(defun ggf/org-mode-visual-fill ()
+  (setq visual-fill-column-width 140
+	visual-fill-column-center-text t)
+  (visual-fill-column-mode 1))
+
+(use-package visual-fill-column
+  :hook (org-mode . ggf/org-mode-visual-fill))
+
+
 
 ;; rainbow-delimiters (https://github.com/Fanael/rainbow-delimiters)
 ;; Highlights delimiters such as parentheses, brackets or braces
@@ -129,7 +148,7 @@
  '(org-agenda-files
    '("~/Documents/Inglés B1+B2/AgendaIngles.org" "~/Documents/InternacionalUNCUYO/NotasConvocatoria.org"))
  '(package-selected-packages
-   '(doom-themes doom-modeline counsel ivy-rich which-key rainbow-delimiters use-package ivy)))
+   '(visual-fill-column org-bullets doom-themes doom-modeline counsel ivy-rich which-key rainbow-delimiters use-package ivy)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
