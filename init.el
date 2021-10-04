@@ -4,7 +4,7 @@
 (menu-bar-mode -1)   ; menu bar disabled
 
 ;; Line wrap
-(visual-line-mode t)
+(global-visual-line-mode t)
 
 ;; Line numbers enabled
 (column-number-mode)
@@ -108,9 +108,13 @@
 	visual-fill-column-center-text t)
   (visual-fill-column-mode 1))
 
+(use-package org-roam
+  :init (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory "~/Documents/RoamNotes"))
+
 (use-package visual-fill-column
   :hook (org-mode . ggf/org-mode-visual-fill))
-
 
 
 ;; rainbow-delimiters (https://github.com/Fanael/rainbow-delimiters)
