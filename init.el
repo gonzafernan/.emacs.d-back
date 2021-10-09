@@ -147,7 +147,7 @@
   (flycheck-checkers '(tex-lacheck
 		       verilog-verilator))
   :config
-  (setq flycheck-verilog-verilator-executable file-truename ("C:\msys64\mingw64\bin\verilator_bin.exe")))
+  (setq flycheck-verilog-verilator-executable "C:/msys64/mingw64/bin/verilator_bin.exe"))
 
 
 ;; Key bindings
