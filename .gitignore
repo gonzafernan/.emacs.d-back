@@ -1,0 +1,11 @@
+*~
+*.data
+*.db
+.#*
+
+elpa/
+fonts/
+eshell
+transient/
+auto-save-list/
+/#init.el#

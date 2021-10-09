@@ -1,10 +1,12 @@
-
+;;; emacs --- configuration
+;;; Commentary:
+;;; Code:
 (scroll-bar-mode -1) ; scroll bar disabled
 (tool-bar-mode -1)   ; tool bar disabled
 (menu-bar-mode -1)   ; menu bar disabled
 
-;; Line wrap
-(global-visual-line-mode t)
+(global-visual-line-mode t) ; line wrapping
+(global-hl-line-mode 1)     ; highlight current row
 
 ;; Line numbers enabled
 (column-number-mode)
@@ -50,11 +52,11 @@
   (load-theme 'doom-vibrant t))
 
 ;; doom-modeline (https://github.com/seagle0128/doom-modeline)
-;; A fancy and fast mode-line inspired by minimalism design.  
+;; A fancy and fast mode-line inspired by minimalism design.
 (use-package doom-modeline
   :init (doom-modeline-mode 1))
 
-;; Solve icons not showing in doom-modeline
+;; Fix icons not showing in doom-modeline
 (use-package all-the-icons)
 
 ;; ivy (https://github.com/abo-abo/swiper)
@@ -88,6 +90,11 @@
   (setq which-key-idle-delay 10000)
   (setq which-key-idle-secondary-delay 0.05))
 
+;; magit
+;; An interface to the version control system Git, implemented as an Emacs package.
+;; magit manual: https://magit.vc/manual/magit.html
+(use-package magit)
+
 ;; org-mode (custom setup)
 (use-package org
   :config
@@ -108,10 +115,19 @@
 	visual-fill-column-center-text t)
   (visual-fill-column-mode 1))
 
+;; org-roam (https://github.com/org-roam/org-roam)
+;; A plain-text knowledge management system. It brings some of Roam's more
+;; powerful features into the Org-mode ecosystem.
 (use-package org-roam
   :init (setq org-roam-v2-ack t)
   :custom
-  (org-roam-directory "~/Documents/RoamNotes"))
+  (org-roam-directory (file-truename "~/org-roam"))
+  (org-roam-dailies-directory "daily/")
+  :bind-keymap
+  ("C-c n d" . org-roam-dailies-map)
+  :config
+  (require 'org-roam-dailies) ; Ensure the keymap is avaiable
+  (org-roam-db-autosync-mode))
 
 (use-package visual-fill-column
   :hook (org-mode . ggf/org-mode-visual-fill))
@@ -122,6 +138,17 @@
 ;; according to their depth.
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
+
+;; flycheck (https://github.com/flycheck/flycheck)
+;;
+(use-package flycheck
+  :init (global-flycheck-mode)
+  :custom
+  (flycheck-checkers '(tex-lacheck
+		       verilog-verilator))
+  :config
+  (setq flycheck-verilog-verilator-executable file-truename ("C:\msys64\mingw64\bin\verilator_bin.exe")))
+
 
 ;; Key bindings
 ;; Global key bindings
@@ -140,6 +167,11 @@
 (global-set-key (kbd "C-c v") 'ivy-push-view)
 (global-set-key (kbd "C-c V") 'ivy-pop-view)
 
+;;; AUCTeX LaTeX cutomization
+(setq TeX-auto-save t)       ; enable parse on load
+(setq TeX-parse-self t)      ; enable parse on save
+(setq TeX-global-PDF-mode t) ; PDF mode (rather than DVI mode)
+
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -152,10 +184,12 @@
  '(org-agenda-files
    '("~/Documents/Inglés B1+B2/AgendaIngles.org" "~/Documents/InternacionalUNCUYO/NotasConvocatoria.org"))
  '(package-selected-packages
-   '(visual-fill-column org-bullets doom-themes doom-modeline counsel ivy-rich which-key rainbow-delimiters use-package ivy)))
+   '(flycheck magit org-roam visual-fill-column org-bullets doom-themes doom-modeline counsel ivy-rich which-key rainbow-delimiters use-package ivy)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+;;; init.el ends here
