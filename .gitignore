@@ -9,3 +9,4 @@ eshell
 transient/
 auto-save-list/
 /#init.el#
+/server/

@@ -8,6 +8,14 @@
 (global-visual-line-mode t) ; line wrapping
 (global-hl-line-mode 1)     ; highlight current row
 
+(set-face-attribute 'default nil :height 115) ; increase font size
+
+;; encoding
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+
 ;; Line numbers enabled
 (column-number-mode)
 (global-display-line-numbers-mode t)
@@ -171,6 +179,9 @@
 (setq TeX-auto-save t)       ; enable parse on load
 (setq TeX-parse-self t)      ; enable parse on save
 (setq TeX-global-PDF-mode t) ; PDF mode (rather than DVI mode)
+
+;;; verilog-mode Verilog development
+(setq verilog-auto-newline nil)
 
 
 (custom-set-variables
