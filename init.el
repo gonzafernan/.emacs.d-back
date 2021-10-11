@@ -10,6 +10,9 @@
 
 (set-face-attribute 'default nil :height 115) ; increase font size
 
+;; start with scratch buffer
+(setq inhibit-startup-message t)
+
 ;; encoding
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
@@ -152,7 +155,8 @@
 (use-package flycheck
   :init (global-flycheck-mode)
   :custom
-  (flycheck-checkers '(tex-lacheck
+  (flycheck-checkers '(emacs-lisp emacs-lisp-checkdoc
+		       tex-lacheck
 		       verilog-verilator))
   :config
   (setq flycheck-verilog-verilator-executable "C:/msys64/mingw64/bin/verilator_bin.exe"))
