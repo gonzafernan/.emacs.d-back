@@ -13,6 +13,10 @@
 ;; start with scratch buffer
 (setq inhibit-startup-message t)
 
+;; Wind Move
+;; Move point from window to window using Shift and the arrow keys.
+(windmove-default-keybindings)
+
 ;; encoding
 (prefer-coding-system 'utf-8)
 (set-default-coding-systems 'utf-8)
@@ -34,6 +38,7 @@
 (require 'package)
 
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+			 ("melpa-stable" . "https://stable.melpa.org/packages/")
 			 ("elpa" . "https://elpa.gnu.org/packages/")
 			 ("org" . "https://orgmode.org/elpa/")))
 
@@ -106,11 +111,35 @@
 ;; magit manual: https://magit.vc/manual/magit.html
 (use-package magit)
 
+;; projectile (https://github.com/bbatsov/projectile)
+;; A project interaction library for Emacs
+(use-package projectile
+  :diminish projectile-mode
+  :pin melpa-stable
+  :config (projectile-mode)
+  :custom ((projectile-completion-system 'ivy))
+  :bind (:map projectile-mode-map
+	      ("C-c p" . projectile-command-map))
+  :init
+  (setq projectile-project-seach-path '("~/Documents/")))
+
+;; counsel-projectile (https://github.com/ericdanan/counsel-projectile)
+;; Provides further ivy integration into projectile by taking advantage of ivy's
+;; support for selecting from a list of actions and applying an action without
+;; leaving the completion session
+(use-package counsel-projectile
+  :config (counsel-projectile-mode))
+
 ;; org-mode (custom setup)
 (use-package org
   :config
   (setq org-todo-keywords
-  '((sequence "TODO" "IN-PROGRESS" "WAITING" "DONE"))))
+	'((sequence "TODO" "IN-PROGRESS" "WAITING" "DONE")))
+  ;; Make windmove work in Org mode
+  :hook ((org-shiftup-final . windmove-up)
+	 (org-shiftleft-final . windmove-left)
+	 (org-shiftdown-final . windmove-down)
+	 (org-shiftright-final . windmove-right)))
 
 ;; org-bullets (https://github.com/sabof/org-bullets)
 ;; utf-8 bullets for org-mode
@@ -199,7 +228,7 @@
  '(org-agenda-files
    '("~/Documents/Inglés B1+B2/AgendaIngles.org" "~/Documents/InternacionalUNCUYO/NotasConvocatoria.org"))
  '(package-selected-packages
-   '(flycheck magit org-roam visual-fill-column org-bullets doom-themes doom-modeline counsel ivy-rich which-key rainbow-delimiters use-package ivy)))
+   '(counsel-projectile projectile flycheck magit org-roam visual-fill-column org-bullets doom-themes doom-modeline counsel ivy-rich which-key rainbow-delimiters use-package ivy)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
