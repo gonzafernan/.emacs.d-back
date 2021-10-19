@@ -1,6 +1,11 @@
 ;;; emacs --- configuration
 ;;; Commentary:
 ;;; Code:
+;; User data
+(setq user-full-name "Gonzalo G. Fernández"
+      user-login-name "gonzafernan"
+      user-mail-address "fernandez.gfg@gmail.com")
+
 (scroll-bar-mode -1) ; scroll bar disabled
 (tool-bar-mode -1)   ; tool bar disabled
 (menu-bar-mode -1)   ; menu bar disabled
@@ -106,6 +111,19 @@
   (setq which-key-idle-delay 10000)
   (setq which-key-idle-secondary-delay 0.05))
 
+;; helpful (https://github.com/Wilfred/helpful)
+;; An alternative to the built-in Emacs help that provides much more
+;; contextual information
+(use-package helpful
+  :custom
+  (counsel-describe-function-function #'helpful-callable)
+  (counsel-describe-variable-function #'helpful-variable)
+  :bind
+  ([remap describe-function] . counsel-describe-function)
+  ([remap describe-command] . helpful-command)
+  ([remap describe-variable] . counsel-describe-variable)
+  ([remap describe-key] . helpful-key))
+
 ;; magit
 ;; An interface to the version control system Git, implemented as an Emacs package.
 ;; magit manual: https://magit.vc/manual/magit.html
@@ -130,11 +148,26 @@
 (use-package counsel-projectile
   :config (counsel-projectile-mode))
 
+;; evil (https://github.com/emacs-evil/evil)
+;; An extensible vi layer for Emacs
+(use-package evil
+  :init
+  (setq evil-want-integration t)
+  (setq evil-want-C-u-scroll t)
+  (setq evil-want-C-d-scroll t)
+  :config
+  (evil-mode 1)
+  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+  (evil-set-initial-state 'messages-buffer-mode 'normal)
+  (evil-set-initial-state 'dashboard-mode 'normal))
+
 ;; org-mode (custom setup)
 (use-package org
   :config
   (setq org-todo-keywords
 	'((sequence "TODO" "IN-PROGRESS" "WAITING" "DONE")))
+  (setq org-image-actual-width nil)
   ;; Make windmove work in Org mode
   :hook ((org-shiftup-final . windmove-up)
 	 (org-shiftleft-final . windmove-left)
@@ -180,15 +213,29 @@
   :hook (prog-mode . rainbow-delimiters-mode))
 
 ;; flycheck (https://github.com/flycheck/flycheck)
-;;
+;; A modern on-the-fly syntax checking extension for GNU Emacs.
 (use-package flycheck
   :init (global-flycheck-mode)
   :custom
-  (flycheck-checkers '(emacs-lisp emacs-lisp-checkdoc
-		       tex-lacheck
-		       verilog-verilator))
+  (flycheck-checkers '(emacs-lisp emacs-lisp-checkdoc ; emacs-lisp
+		       tex-lacheck                    ; LaTeX
+		       verilog-verilator))            ; verilog
+  (flycheck-check-syntax-automatically '(save) "Chack automatically on save.")
   :config
-  (setq flycheck-verilog-verilator-executable "C:/msys64/mingw64/bin/verilator_bin.exe"))
+  (setq flycheck-verilog-verilator-executable "C:/msys64/mingw64/bin/verilator_bin.exe")
+  (setq flycheck-global-modes '(not org-mode))) ; Disable flycheck in org buffer
+
+;;; AUCTeX LaTeX cutomization
+(use-package latex-preview-pane
+  :config
+  (latex-preview-pane-enable)) ; load automatically preview-pane onl atex file
+
+(setq TeX-auto-save t)       ; enable parse on load
+(setq TeX-parse-self t)      ; enable parse on save
+(setq TeX-global-PDF-mode t) ; PDF mode (rather than DVI mode)
+
+;;; verilog-mode Verilog development
+(setq verilog-auto-newline nil)
 
 
 ;; Key bindings
@@ -208,15 +255,6 @@
 (global-set-key (kbd "C-c v") 'ivy-push-view)
 (global-set-key (kbd "C-c V") 'ivy-pop-view)
 
-;;; AUCTeX LaTeX cutomization
-(setq TeX-auto-save t)       ; enable parse on load
-(setq TeX-parse-self t)      ; enable parse on save
-(setq TeX-global-PDF-mode t) ; PDF mode (rather than DVI mode)
-
-;;; verilog-mode Verilog development
-(setq verilog-auto-newline nil)
-
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -228,7 +266,7 @@
  '(org-agenda-files
    '("~/Documents/Inglés B1+B2/AgendaIngles.org" "~/Documents/InternacionalUNCUYO/NotasConvocatoria.org"))
  '(package-selected-packages
-   '(counsel-projectile projectile flycheck magit org-roam visual-fill-column org-bullets doom-themes doom-modeline counsel ivy-rich which-key rainbow-delimiters use-package ivy)))
+   '(evil helpful latex-preview-pane counsel-projectile projectile flycheck magit org-roam visual-fill-column org-bullets doom-themes doom-modeline counsel ivy-rich which-key rainbow-delimiters use-package ivy)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
