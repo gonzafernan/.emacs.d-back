@@ -162,12 +162,26 @@
   (evil-set-initial-state 'messages-buffer-mode 'normal)
   (evil-set-initial-state 'dashboard-mode 'normal))
 
+;; key-chord (https://github.com/emacsorphanage/key-chord)
+;; Implements support for mapping a pair of simultaneously pressed keys to
+;; a command and for mapping the same key being pressed twice in quick
+;; succession to a command.
+(use-package key-chord
+  :config
+  (key-chord-mode 1)
+  (key-chord-define evil-insert-state-map  "jk" 'evil-normal-state))
+
 ;; org-mode (custom setup)
 (use-package org
   :config
   (setq org-todo-keywords
 	'((sequence "TODO" "IN-PROGRESS" "WAITING" "DONE")))
   (setq org-image-actual-width nil)
+  ;; active Babel languages
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (python . t)))
   ;; Make windmove work in Org mode
   :hook ((org-shiftup-final . windmove-up)
 	 (org-shiftleft-final . windmove-left)
@@ -266,7 +280,7 @@
  '(org-agenda-files
    '("~/Documents/Inglés B1+B2/AgendaIngles.org" "~/Documents/InternacionalUNCUYO/NotasConvocatoria.org"))
  '(package-selected-packages
-   '(evil helpful latex-preview-pane counsel-projectile projectile flycheck magit org-roam visual-fill-column org-bullets doom-themes doom-modeline counsel ivy-rich which-key rainbow-delimiters use-package ivy)))
+   '(key-chord evil helpful latex-preview-pane counsel-projectile projectile flycheck magit org-roam visual-fill-column org-bullets doom-themes doom-modeline counsel ivy-rich which-key rainbow-delimiters use-package ivy)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
