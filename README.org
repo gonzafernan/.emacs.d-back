@@ -57,7 +57,7 @@
   #+begin_src emacs-lisp
     (column-number-mode)
     (global-display-line-numbers-mode t)
-	 ;; Disable line numbers for the following modes
+    ;; Disable line numbers for the following modes
     (dolist (mode '(org-mode-hook
 		    doc-view-mode-hook
 		    term-mode-hook
@@ -66,24 +66,21 @@
       (add-hook mode (lambda () (display-line-numbers-mode 0))))
   #+end_src
 
-** Custom Theme
+* Custom Theme
    [[https://github.com/doomemacs/themes][doom-themes]] a theme megapack for GNU Emacs, inspired by community favorites
    #+begin_src emacs-lisp
      (use-package doom-themes
        :config
        (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
 	     doom-themes-enable-italic t) ; if nil, italics is universally disabled
-       (load-theme 'doom-vibrant t))
-   #+end_src
+       (load-theme 'doom-vibrant t)
 
-   doom-theme customization:
-   #+begin_src emacs-lisp
-     ;; Flash the mode-line when the Emacs bell rings (i.e. an error occurs).
-     ;; May not be compatible with all mode line plugins.
-     (doom-themes-visual-bell-config)
+       ;; Flash the mode-line when the Emacs bell rings (i.e. an error occurs).
+       ;; May not be compatible with all mode line plugins.
+       (doom-themes-visual-bell-config)
 
-     ;; Corrects and improves some of org-mode's native fontification issues.
-     (doom-themes-org-config)
+       ;; Corrects and improves some of org-mode's native fontification issues.
+       (doom-themes-org-config))
    #+end_src
 
    [[https://github.com/seagle0128/doom-modeline][doom-modeline]] a fancy and fast mode-line inspired by minimalism design
@@ -229,6 +226,22 @@
        (set-face-attribute 'org-document-info-keyword nil :inherit 'fixed-pitch))
    #+end_src
 
+** LaTeX export
+   #+begin_src emacs-lisp
+     (add-to-list 'org-latex-packages-alist
+		  '("AUTO" "babel" t ("pdflatex")))
+
+     (setq ieeetran-class
+	   '("IEEEtran" "\\documentclass[11pt]{IEEEtran}"
+	     ("\\section{%s}" . "\\section*{%s}")
+	     ("\\subsection{%s}" . "\\subsection*{%s}")
+	     ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+	     ("\\paragraph{%s}" . "\\paragraph*{%s}")
+	     ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+
+     (add-to-list 'org-latex-classes ieeetran-class t)
+   #+end_src
+
 ** Org-mode setup
    #+begin_src emacs-lisp
      (use-package org
@@ -269,6 +282,7 @@
    #+begin_src emacs-lisp
      (use-package magit)
    #+end_src
+
 ** Projectile
    [[https://github.com/bbatsov/projectile][Projectile]] is a project interaction library for Emacs. Its goal is to provide a nice set of features operating on a project level without introducing external dependencies (when feasible). For instance - finding project files has a portable implementation written in pure Emacs Lisp without the use of GNU find (but for performance sake an indexing mechanism backed by external commands exists as well).
    Projectile has native support for using ivy as its completion system. [[https://github.com/ericdanan/counsel-projectile][Counsel-projectile]] provides further ivy integration into projectile by taking advantage of ivy's support for selecting from a list of actions and applying an action without leaving the completion session. Concretely, counsel-projectile defines replacements for existing projectile commands as well as new commands that have no projectile counterparts. A minor mode is also provided that adds key bindings for all these commands on top of the projectile key bindings.
@@ -287,6 +301,60 @@
        :config (counsel-projectile-mode))
    #+end_src
 
+* Software development
+** Python
+
+* Note taking
+** Spell checking: Flyspell
+   [[https://www.emacswiki.org/emacs/FlySpell][Flyspell]] enables on-the-fly spell checking in Emacs by the means of a minor mode. It is called Flyspell. This facility is hardly intrusive. It requires no help. Flyspell highlights incorrect words as soon as they are completed or as soon as the TextCursor hits a new word.
+   #+begin_src emacs-lisp
+     (setq-default ispell-program-name "C:/msys64/mingw64/bin/aspell.exe")
+     (dolist (hook '(text-mode-hook))
+       (add-hook hook (lambda () (flyspell-mode 1))))
+     (dolist (hook '(change-log-mode-hook log-edit-mode-hook))
+       (add-hook hook (lambda () (flyspell-mode -1))))
+     (defun fd-switch-dictionary()
+	   (interactive)
+	   (let* ((dic ispell-current-dictionary)
+	      (change (if (string= dic "spanish") "english" "spanish")))
+	     (ispell-change-dictionary change)
+	     (message "Dictionary switched from %s to %s" dic change)
+	     ))
+
+	   (global-set-key (kbd "<f8>")   'fd-switch-dictionary)
+   #+end_src
+   Run flyspell-buffer after change to dictionary
+   #+begin_src emacs-lisp
+     (defun flyspell-buffer-after-pdict-save (&rest _)
+       (flyspell-buffer))
+
+     (advice-add 'ispell-pdict-save :after #'flyspell-buffer-after-pdict-save)
+#+end_src
+     If you use flyspell with aspell instead of ispell you have to add:
+     ,#+begin_src emacs-lisp
+       (setq ispell-list-command "--list")
+   #+end_src
+
+** Bibliography management
+
+ #+begin_src emacs-lisp
+   (use-package ebib)
+ #+end_src
+
+* LaTeX
+  #+begin_src emacs-lisp
+    (setq org-latex-pdf-process
+	  '("pdflatex -interaction nonstopmode -output-directory %o %f"
+	    "biber %b"
+	    "pdflatex -interaction nonstopmode -output-directory %o %f"
+	    "pdflatex -interaction nonstopmode -output-directory %o %f"))
+  #+end_src
+
+  
+* Data Science
+  #+begin_src emacs-lisp
+    (use-package csv-mode)
+  #+end_src
 * Other useful tools
 ** Helpful
    [[https://github.com/Wilfred/helpful][Helpful]] is an alternative to the built-in Emacs help that provides much more contextual information.
